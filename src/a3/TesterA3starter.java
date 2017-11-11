@@ -11,8 +11,7 @@ import java.util.*;
 
 public class TesterA3starter
 {
-	public static ArrayList<String> readWordsFromFile(String filename)
-	{
+	public static ArrayList<String> readWordsFromFile(String filename)	{
 		ArrayList<String> words = new ArrayList<String>();
 		try
 		{
@@ -44,34 +43,35 @@ public class TesterA3starter
 	public static void main(String[] args)
 	{	   
 		ArrayList<String> list = new ArrayList<String>();
-
-/*    
- *    You can test your code with the input file below.
- *	  For example, if you wish to share your outputs on the discussion board 
- *    that you obtained using the given text file, that's fine. 
- *		
- *	  You will need to put a different pathname in here.
- */ 		
- 	//	String fileName = "C:\\Users\\Michael\\Dropbox\\Eclipse (Yoga)\\250\\src\\assignments2017\\a3\\bodybuilding.txt";
-    //	list = readWordsFromFile(fileName);
- 
- 	// String fileName = "//home//ramchalamkr//bodybuilding.txt";
-	// list = readWordsFromFile(fileName);
-
-    //    For debugging, we suggest you use a smaller set of words such as the ones shown in the PDF.      
+		ArrayList<String> wordlist = new ArrayList<String>();
 		
-		Collections.addAll(list, "a", "and", "ax", "dog", "door", "dot");
+		String fileName = "C:\\newworkspace\\250 assignments\\src\\a3\\bodybuilding.txt";
+    	list = readWordsFromFile(fileName);
+    	String fileName2 ="C:\\newworkspace\\250 assignments\\src\\a3\\Wordbank.txt";
+		wordlist=readWordsFromFile(fileName2);
+		Collections.addAll(list, "a", "and", "ax", "dog", "door", "@#$%^%#", "20", "_");
 
 		WordTree   wordTree = new WordTree();
 		wordTree.loadWords(list);
-
+		
+		
 		System.out.println("list contains " + list.size() + " words");
+		ArrayList<String> errors = new ArrayList<String>();
+		Random r = new Random();
+		for (int i=0;i<500;i++) {
+			String random = wordlist.get(r.nextInt(wordlist.size()-1));
+			System.out.println("WordTree contains '" + random + "' = "+ wordTree.contains(random) + " ("+list.contains(random)+") " );	
+			
+			if(!String.valueOf(wordTree.contains(random)).equals(String.valueOf((list.contains(random))))) {
+				errors.add(random);
+			}
+		}
 
 		// Test if the contains() method works, print input and output
 		//
 		//  e.g.: try door, an, cat (should return true, false, and false respectively)
 
-		System.out.println();
+/*		System.out.println();
 		System.out.println("---  Test contains() method.   Correct answer shown in brackets. -----" );
 		System.out.println("WordTree contains 'door' = " + wordTree.contains("door") + " (true)" );
 		System.out.println("WordTree contains 'and' = " + wordTree.contains("and")   + " (true)");
@@ -80,18 +80,19 @@ public class TesterA3starter
 		System.out.println("WordTree contains 'ax' = " + wordTree.contains("ax")     + " (true)");
 		System.out.println("WordTree contains 'dot' = " + wordTree.contains("dot")   + " (true)");
 		System.out.println("WordTree contains 'a' = " + wordTree.contains("a")       + " (true)");
-		System.out.println("WordTree contains 'an' = " + wordTree.contains("an")     + " (false)");      
+		System.out.println("WordTree contains 'an' = " + wordTree.contains("an")     + " (false)"); */     
 
 		/*  Test if getPrefix works, print input and output
 		 *    ex: "door", "any", "cat" should return "door", "an", and "" respectively
 		 *    
 		 */    
-		
+		System.out.println("WordTree contains '@#$%^%#' = " + wordTree.contains("@#$%^%#"));
 		System.out.println("");
 		System.out.println("-----  Test getPrefix()");		
 		System.out.println("longest prefix of door = " + wordTree.getPrefix("door"));
 		System.out.println("longest prefix of any = " + wordTree.getPrefix("any"));
 		System.out.println("longest prefix of cat = " + wordTree.getPrefix("cat"));
+		System.out.println("longest prefix of @#$%^ = " + wordTree.getPrefix("@#$%^"));
 
 		/* Test getListPrefixMatches, print input and output
 		 * Try prefixes "a", "do", "c" (should return [a, and, ax], [dog, door, dot], [ ] respectively)
@@ -102,6 +103,10 @@ public class TesterA3starter
 		System.out.println("a = " + wordTree.getListPrefixMatches("a"));
 		System.out.println("do = " + wordTree.getListPrefixMatches("do"));
 		System.out.println("c = " + wordTree.getListPrefixMatches("c"));
-
+		System.out.println("@ = " + wordTree.getListPrefixMatches("@"));
+		System.out.println("bodies = " + wordTree.getListPrefixMatches("bodies"));
+		System.out.println("pray = " + wordTree.getListPrefixMatches("pray"));
+		
+		System.out.print("\n Errors in contains: " + errors);
 	}
 }

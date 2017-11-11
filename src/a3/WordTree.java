@@ -5,6 +5,12 @@ package a3;
 // Student Name: Alexander Lam
 //Student ID: 260746239
 
+//start 10pm
+//STOP:2:00AM
+//Start 9am
+//DONE 10am
+//+30min debug
+//total: 5h
 import java.util.*;
 
 /*
@@ -28,6 +34,22 @@ public class WordTree {
 	 */
 	public void insert(String word) {
 		// ADD YOUR CODE BELOW HERE
+		WordTreeNode start = getPrefixNode(word);
+		WordTreeNode next = start;
+
+		int indexNextToAdd = start.depth;
+		if (word.length() == start.depth) { // the longest prefix in the tree is as long as the word aka the word
+											// has already been added to the tree
+			start.endOfWord = true; // make the tree recognize that the prefix is also a word
+		} else {
+			for (int i = indexNextToAdd; i < word.length(); i++) {
+				WordTreeNode newChar = next.createChild(word.charAt(i));
+				if (i == word.length() - 1) {
+					newChar.setEndOfWord(true);
+				}
+				next = newChar;
+			}
+		}
 
 		// ADD YOUR ABOVE HERE
 	}
@@ -49,8 +71,18 @@ public class WordTree {
 	 */
 	WordTreeNode getPrefixNode(String word) {
 		// ADD YOUR CODE BELOW HERE
-
-		return null; // REPLACE THIS STUB
+		char letter;
+		WordTreeNode prefixNode = root;
+		WordTreeNode nextPrefixNode;
+		for (int i = 0; i < word.length(); i++) {
+			letter = word.charAt(i);
+			nextPrefixNode = prefixNode.children[letter];
+			if (nextPrefixNode != null) {
+				prefixNode = nextPrefixNode;
+			} else
+				break;
+		}
+		return prefixNode; // REPLACE THIS STUB
 
 		// ADD YOUR CODE ABOVE HERE
 
@@ -72,22 +104,78 @@ public class WordTree {
 	 */
 	public boolean contains(String word) {
 		// ADD YOUR CODE BELOW HERE
+		if ((getPrefixNode(word).toString().length() == word.length()) && getPrefixNode(word).endOfWord) {
+			return true;
+		} else
+			return false;
 
-		return false; // REMOVE THIS STUB
+		// ADD YOUR CODE ABOVE HERE
+	}
+
+	// method ressembling the above contains exept checks for the exact input string
+	// and returns true if it is present in the tree regardless if it is an actual
+	// word or not
+	public boolean containString(String word) {
+		// ADD YOUR CODE BELOW HERE
+		if ((getPrefixNode(word).toString().length() == word.length())) {
+			return true;
+		} else
+			return false;
 
 		// ADD YOUR CODE ABOVE HERE
 	}
 
 	/*
 	 * Return a list of all words in the tree that have the given prefix. For
-	 * example, getListPrefixMatches("") should return all words in the tree.
+	 * example, getListPrefixMatches(" ") should return all words in the tree.
 	 */
+
+	// 3h til this method
 	public ArrayList<String> getListPrefixMatches(String prefix) {
 		// ADD YOUR CODE BELOW
+		ArrayList<String> wordList = new ArrayList<String>();
+		ArrayList<WordTreeNode> nodeList = new ArrayList<WordTreeNode>();
+		 if(!containString(prefix)) {
+		 wordList.add("");
+		 }else {
+		WordTreeNode prefixNode = getPrefixNode(prefix);
 
-		return null; // REMOVE THIS STUB
+		if (prefixNode.endOfWord) {
+			nodeList.add(prefixNode);
+		}
+		if ((prefixNode == root) && prefix.charAt(0) == (char) 0) { // given prefix was blankspace
+			scanEndWord(prefixNode, nodeList);
+		} else if (prefixNode == root) { // prefix node is the root but the given prefix was not the blankspace
+			nodeList.add(prefixNode); // add the blankspace character
+		} else {
+			scanEndWord(prefixNode, nodeList); // general condition when the prefix node isnt the root node
+		}
 
-		// ADD YOUR CODE ABOVE HERE
+		for (WordTreeNode e : nodeList) {
+			wordList.add(e.toString());
+		}
+
+		 }
+		return wordList;
+	}
+
+	// ADD YOUR CODE ABOVE HERE
+
+	// recursively scans through the tree and finds nodes that have endOfWord = true
+	// and adds them to array list
+	public void scanEndWord(WordTreeNode node, ArrayList<WordTreeNode> nodeList) {
+
+		if (node != null && node.children != null) {
+			for (WordTreeNode n : node.children) {
+				if (n == null) {
+					continue;
+				} else if (n.endOfWord) {
+					nodeList.add(n);
+				}
+				scanEndWord(n, nodeList);
+			}
+		}
+
 	}
 
 	/*
@@ -162,23 +250,24 @@ public class WordTree {
 		 */
 
 		public WordTreeNode createChild(char c) {
-			WordTreeNode child = new WordTreeNode();
-			this.children[(int) c] = child;
-			child.children= new WordTreeNode[WordTreeNode.NUMCHILDREN];
-
 			// ADD YOUR CODE BELOW HERE
-
+			WordTreeNode child = new WordTreeNode();
+			child.children = new WordTreeNode[WordTreeNode.NUMCHILDREN];
+			child.parent = this;
+			child.depth = this.depth + 1;
+			child.charInParent = c;
+			child.endOfWord = false; //
+			this.children[(int) c] = child;
 			// ADD YOUR CODE ABOVE HERE
 
 			return child;
 		}
 
 		// Get the child node associated with a given character, i.e. that character is
-		// "on"
-		// the edge from this node to the child. The child could be null.
+		// "on" the edge from this node to the child. The child could be null.
 
 		public WordTreeNode getChild(char c) {
-			return children[c];
+			return this.children[c];
 		}
 
 		// Test whether the path from the root to this node is a word in the tree.
@@ -206,8 +295,16 @@ public class WordTree {
 		@Override
 		public String toString() {
 			// ADD YOUR CODE BELOW HERE
+			String prefix2 = new String();
+			WordTreeNode parent = this.parent;
 
-			return null; // REMOVE THIS CODE STUB
+			prefix2 = prefix2 + this.charInParent;
+			while (parent != null && parent.charInParent != (char) 0) {
+				prefix2 = parent.charInParent + prefix2;
+				WordTreeNode temp = parent;
+				parent = temp.parent;
+			}
+			return prefix2;
 
 			// ADD YOUR CODE ABOVE HERE
 		}
