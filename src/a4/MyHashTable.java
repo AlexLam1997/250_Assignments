@@ -82,24 +82,24 @@ class MyHashTable<K, V> {
 
 	public V put(K key, V value) {
 		// ADD YOUR CODE BELOW HERE
+		if (entryCount+1 > this.MAX_LOAD_FACTOR * this.numBuckets) {
+			this.rehash();
+		}
+		
 		int hashvalue = hashFunction(key);
 		if (this.containsKey(key)) { // previous value already associated w/key
 			return buckets.get(hashvalue).getListNode(key).resetValue(value);
 		} else { // new key
-			if (buckets.get(hashvalue) == null) { // no previous entry with this hashvalue, create new bucket
-				HashLinkedList<K, V> newEntry = new HashLinkedList<K, V>();
-				newEntry.add(key, value);
-				buckets.add(hashvalue, newEntry);
-				entryCount++;
-
-			} else { // hashvalue already exists, add to the linkedlist
+//			if (buckets.get(hashvalue) == null) { // no previous entry with this hashvalue, create new bucket
+//				HashLinkedList<K, V> newEntry = new HashLinkedList<K, V>();
+//				newEntry.add(key, value);
+//				buckets.add(hashvalue, newEntry);
+//				entryCount++;
+//
+//			} else { // hashvalue already exists, add to the linkedlist
 				buckets.get(hashvalue).add(key, value); // can use buckets.set instead
 				entryCount++;
-			}
-
-			if (entryCount > this.MAX_LOAD_FACTOR * this.numBuckets) {
-				this.rehash();
-			}
+			//}
 			return null; // if not overwriting anything
 		}
 		// ADD YOUR CODE ABOVE HERE
@@ -184,10 +184,13 @@ class MyHashTable<K, V> {
 		// ADD YOUR CODE BELOW HERE
 		// new table with around twice the capacity
 		MyHashTable<K, V> newTable = new MyHashTable<K, V>(buckets.size() * 2);
-		newTable.entryCount = this.entryCount;
+		
+		//newTable.entryCount = this.entryCount;
+		
 		// transfer all the key value pairs of the old hashtable into the new one
 		for (HashLinkedList<K, V> linkedList : this.buckets) {
-			for (int i = 0; i < linkedList.size(); i++) {
+			int size = linkedList.size();
+			for (int i = 0; i < size; i++) {
 				HashNode<K, V> oldNode = linkedList.removeFirst();
 				newTable.put(oldNode.getKey(), oldNode.getValue());
 				// transfer all old entries to the new arraylist
