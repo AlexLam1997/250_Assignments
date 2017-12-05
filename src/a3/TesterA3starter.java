@@ -25,7 +25,7 @@ public class TesterA3starter
 			 * which lists the '\W' symbol in the right panel as any non alphanumeric character
 			 * and lists the '+' symbols as meaning any non-zero number of repetitions  
 			 */
-			scanner.useDelimiter("\\W+");
+			//scanner.useDelimiter("\\W+");
 			
 			while (scanner.hasNext())
 			{
@@ -55,6 +55,7 @@ public class TesterA3starter
 		wordTree.loadWords(list);
 		
 		
+		System.out.println("list contains " + list.size() + " words");
 		System.out.println("list contains " + list.size() + " words");
 		ArrayList<String> errors = new ArrayList<String>();
 		Random r = new Random();
@@ -93,6 +94,7 @@ public class TesterA3starter
 		System.out.println("longest prefix of any = " + wordTree.getPrefix("any"));
 		System.out.println("longest prefix of cat = " + wordTree.getPrefix("cat"));
 		System.out.println("longest prefix of @#$%^ = " + wordTree.getPrefix("@#$%^"));
+		System.out.println("longest prefix of blankspace = " + wordTree.getPrefix("."));
 
 		/* Test getListPrefixMatches, print input and output
 		 * Try prefixes "a", "do", "c" (should return [a, and, ax], [dog, door, dot], [ ] respectively)
@@ -106,7 +108,9 @@ public class TesterA3starter
 		System.out.println("@ = " + wordTree.getListPrefixMatches("@"));
 		System.out.println("bodies = " + wordTree.getListPrefixMatches("bodies"));
 		System.out.println("pray = " + wordTree.getListPrefixMatches("pray"));
-		
+		System.out.println("  = " + wordTree.getListPrefixMatches(""));
+		System.out.println("  = " + wordTree.getListPrefixMatches(String.valueOf((char)0)));
+		System.out.println("  = " + wordTree.getListPrefixMatches("A"));
 		System.out.print("\n Errors in contains: " + errors);
 	}
 }

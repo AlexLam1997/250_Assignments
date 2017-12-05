@@ -112,17 +112,15 @@ public class WordTree {
 		// ADD YOUR CODE ABOVE HERE
 	}
 
-	// method ressembling the above contains exept checks for the exact input string
+	// method ressembling the above contains except checks for the exact input string
 	// and returns true if it is present in the tree regardless if it is an actual
 	// word or not
 	public boolean containString(String word) {
-		// ADD YOUR CODE BELOW HERE
 		if ((getPrefixNode(word).toString().length() == word.length())) {
 			return true;
 		} else
 			return false;
 
-		// ADD YOUR CODE ABOVE HERE
 	}
 
 	/*
@@ -135,27 +133,28 @@ public class WordTree {
 		// ADD YOUR CODE BELOW
 		ArrayList<String> wordList = new ArrayList<String>();
 		ArrayList<WordTreeNode> nodeList = new ArrayList<WordTreeNode>();
-		 if(!containString(prefix)) {
-		 wordList.add("");
+		if(!containString(prefix)) {
+		 wordList.add(" ");
 		 }else {
 		WordTreeNode prefixNode = getPrefixNode(prefix);
 
 		if (prefixNode.endOfWord) {
 			nodeList.add(prefixNode);
 		}
-		if ((prefixNode == root) && prefix.charAt(0) == (char) 0) { // given prefix was blankspace
+		if (((prefixNode == root) && prefix.charAt(0) == (char) 0) || ((prefixNode == root) && prefix.charAt(0) == ' ')) { // given prefix was blankspace
 			scanEndWord(prefixNode, nodeList);
 		} else if (prefixNode == root) { // prefix node is the root but the given prefix was not the blankspace
 			nodeList.add(prefixNode); // add the blankspace character
 		} else {
 			scanEndWord(prefixNode, nodeList); // general condition when the prefix node isnt the root node
 		}
-
+	
 		for (WordTreeNode e : nodeList) {
 			wordList.add(e.toString());
 		}
 
 		 }
+
 		return wordList;
 	}
 
